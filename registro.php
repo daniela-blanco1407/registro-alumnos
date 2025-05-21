@@ -12,7 +12,7 @@ $carrera = $_POST['carrera'];
 $sql = "INSERT INTO alumnos (nombre, numero_control, carrera) VALUES ('$nombre', '$numero_control', '$carrera')";
 
 if ($conexion->query($sql) === TRUE) {
-    echo "Alumno registrado con éxito. <a href='index.html'>Volver</a>";
+    echo "Alumno registrado con exito. <a href='index.html'>Volver</a>";
 } else {
     echo "Error: " . $conexion->error;
 }
