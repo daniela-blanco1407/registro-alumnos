@@ -1,23 +1,36 @@
 <?php
-try {
-    $conn = new PDO(
-        "sqlsrv:server = tcp:serverdani.database.windows.net,1433; Database = ProyectoDB",
-        "daniuser",
-        "Hope2tim2*3"
-    );
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$serverName = "tcp:serverdani.database.windows.net,1433";
+$connectionOptions = array(
+    "Database" => "ProyectoDB",
+    "Uid" => "daniuser",
+    "PWD" => "Hope2tim2*3",
+    "Encrypt" => 1,
+    "TrustServerCertificate" => 0,
+    "LoginTimeout" => 30
+);
 
-    $nombre = $_POST['nombre'];
-    $numero_control = $_POST['numero_control'];
-    $carrera = $_POST['carrera'];
+$conn = sqlsrv_connect($serverName, $connectionOptions);
 
-    $sql = "INSERT INTO alumnos (nombre, numero_control, carrera) VALUES (?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$nombre, $numero_control, $carrera]);
-
-    echo "Alumno registrado con éxito. <a href='index.html'>Volver</a>";
-} catch (PDOException $e) {
-    echo "Error al registrar: " . $e->getMessage();
+if ($conn === false) {
+    die(print_r(sqlsrv_errors(), true));
 }
+
+$nombre = $_POST['nombre'];
+$numero_control = $_POST['numero_control'];
+$carrera = $_POST['carrera'];
+
+$sql = "INSERT INTO alumnos (nombre, numero_control, carrera) VALUES (?, ?, ?)";
+$params = array($nombre, $numero_control, $carrera);
+
+$stmt = sqlsrv_query($conn, $sql, $params);
+
+if ($stmt === false) {
+    echo "Error al registrar: ";
+    die(print_r(sqlsrv_errors(), true));
+} else {
+    echo "Alumno registrado con éxito. <a href='index.html'>Volver</a>";
+}
+
+sqlsrv_close($conn);
 ?>
 
